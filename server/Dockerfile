@@ -30,7 +30,8 @@ RUN chown -R cod4 . \
 
 ENV PORT=28960
 ENV PunkBuster=0
-ENV Config=/main/server.cfg
+ENV Config=server.cfg
+ENV Mod=""
 
 ENTRYPOINT [ "/srv/cod4/entrypoint.sh" ]
-CMD +set net_port $PORT +set sv_punkbuster $PunkBuster +set sv_pure 0 +exec $Config +map_rotate
+CMD +set net_port $PORT +set sv_punkbuster $PunkBuster $([ -n "$Mod" ] && printf '+set fs_game %s ' "$Mod") +set sv_pure 0 +exec $Config +map_rotate
