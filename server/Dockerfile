@@ -10,11 +10,7 @@ RUN mkdir -p /srv/main \
     && mkdir -p /srv/cod4/usermaps \
     && mkdir -p /srv/cod4/main_shared
 
-VOLUME /srv/cod4/main \
-       /srv/cod4/zone \
-       /srv/cod4/mods \
-       /srv/cod4/usermaps \
-       /srv/cod4/main_shared
+VOLUME /srv/cod4
 
 RUN useradd --home-dir /srv/cod4 cod4
 
@@ -30,8 +26,14 @@ RUN chown -R cod4 . \
 
 ENV PORT=28960
 ENV PunkBuster=0
-ENV Config=server.cfg
 ENV Mod=""
+ENV DATA_VOLUME_PATH="/var/lib/docker/volumes/cod4/_data"
+ENV Config=server.cfg
+
+ENV MAIN_VOLUME_PATH="$DATA_VOLUME_PATH/main"
+ENV ZONE_VOLUME_PATH="$DATA_VOLUME_PATH/zone"
+ENV MODS_VOLUME_PATH="$DATA_VOLUME_PATH/mods"
+ENV USERMAPS_VOLUME_PATH="$DATA_VOLUME_PATH/usermaps"
 
 ENTRYPOINT [ "/srv/cod4/entrypoint.sh" ]
 CMD +set net_port $PORT +set sv_punkbuster $PunkBuster $([ -n "$Mod" ] && printf '+set fs_game %s ' "$Mod") +set sv_pure 0 +exec $Config +map_rotate
